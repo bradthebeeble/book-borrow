@@ -68,7 +68,7 @@
             "id": 4,
             "title": "Set up middleware for route protection",
             "description": "Create middleware.ts to protect routes based on authentication status",
-            "status": "done",
+   
             "dependencies": [],
             "details": "",
             "testStrategy": ""
@@ -322,6 +322,7 @@
     "metadata": {
       "created": "2025-07-02T18:22:21.614Z",
       "updated": "2025-07-03T15:50:37.669Z",
+
       "description": "Tasks for master context"
     }
   }

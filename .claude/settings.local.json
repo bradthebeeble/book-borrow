@@ -30,6 +30,7 @@
       "mcp__taskmaster-ai__get_task",
       "Bash(git fetch:*)",
       "mcp__taskmaster-ai__update_subtask"
+
     ],
     "deny": []
   }
