@@ -29,7 +29,7 @@
         "id": 3,
         "title": "Implement Authentication with Auth.js",
         "description": "Set up authentication using Auth.js v5 with support for Google OAuth and email/password login.",
-        "status": "in-progress",
+        "status": "done",
         "dependencies": [
           2
         ],
@@ -321,7 +321,7 @@
     ],
     "metadata": {
       "created": "2025-07-02T18:22:21.614Z",
-      "updated": "2025-07-03T15:50:03.633Z",
+      "updated": "2025-07-03T15:50:37.669Z",
       "description": "Tasks for master context"
     }
   }
