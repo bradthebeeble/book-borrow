@@ -17,7 +17,16 @@
       "WebFetch(domain:github.com)",
       "Bash(git add:*)",
       "Bash(ls:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "mcp__github__create_branch",
+      "Bash(git checkout:*)",
+      "mcp__github__search_repositories",
+      "mcp__github__create_repository",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "Bash(git stash:*)",
+      "mcp__github__list_pull_requests",
+      "mcp__coderabbitai__get_coderabbit_reviews"
     ],
     "deny": []
   }
