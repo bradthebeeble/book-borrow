@@ -1,7 +1,11 @@
 ---
 allowed-tools: [Read, Grep, Bash, mcp__github__create_branch, TodoWrite, Edit, Write, MultiEdit, Glob, Task, exit_plan_mode, mcp__taskmaster-ai__get_tasks, mcp__taskmaster-ai__next_task, mcp__taskmaster-ai__get_task, mcp__taskmaster-ai__add_task, mcp__taskmaster-ai__update_task, mcp__taskmaster-ai__update_subtask, mcp__taskmaster-ai__set_task_status, mcp__taskmaster-ai__expand_task, mcp__taskmaster-ai__analyze_project_complexity]
-description: Execute tasks using TaskMaster AI for comprehensive planning and user approval workflow
+description: Execute SINGLE tasks using TaskMaster AI with mandatory planning, user approval, and no auto-progression
 ---
+
+# CRITICAL: SINGLE TASK EXECUTION ONLY
+
+This command implements **EXACTLY ONE** task or subtask at a time and **NEVER** automatically progresses to the next task. After completion, it STOPS and waits for user instruction.
 
 ## Context
 - Task management: TaskMaster AI MCP server
@@ -31,24 +35,28 @@ description: Execute tasks using TaskMaster AI for comprehensive planning and us
 
    USER REQUEST: {user_request}
 
-   First, check the current TaskMaster tasks and find the most relevant one:
+   CRITICAL: Focus on implementing ONLY ONE SPECIFIC TASK/SUBTASK. Do NOT plan for multiple tasks or automatic progression to next tasks.
+
+   First, check the current TaskMaster tasks and find the most relevant SINGLE task:
    1. Use mcp__taskmaster-ai__get_tasks to see all available tasks
    2. Use mcp__taskmaster-ai__next_task to find the recommended next task
    3. Use mcp__taskmaster-ai__get_task with specific ID if user mentioned one
+   4. **CRITICAL**: Select ONLY ONE task or subtask to implement
 
-   {thinking_level} about this task and create a detailed plan that includes:
+   {thinking_level} about this SINGLE task and create a detailed plan that includes:
 
-   1. **Task Analysis**: Break down the request into core components
-   2. **TaskMaster Integration**: Map request to existing TaskMaster tasks or create new ones
-   3. **Current State Assessment**: Review existing code and implementation progress
-   4. **Implementation Strategy**: Outline approach and methodology
-   5. **Step-by-Step Plan**: Detailed steps with clear deliverables
-   6. **Branch Strategy**: Recommend feature branch naming
-   7. **Risk Assessment**: Identify potential challenges and mitigation strategies
-   8. **Testing Strategy**: Define testing approach and requirements
-   9. **Success Criteria**: Define how success will be measured
-   10. **Resource Requirements**: Tools, files, or dependencies needed
-   11. **TaskMaster Updates**: Plan for updating task status and subtasks
+   1. **Single Task Focus**: Clearly identify the ONE task/subtask being implemented
+   2. **Task Analysis**: Break down ONLY this specific request into core components
+   3. **TaskMaster Integration**: Map request to the specific TaskMaster task (no others)
+   4. **Current State Assessment**: Review existing code and implementation progress for THIS task only
+   5. **Implementation Strategy**: Outline approach and methodology for THIS task only
+   6. **Step-by-Step Plan**: Detailed steps with clear deliverables for THIS task only
+   7. **Branch Strategy**: Recommend feature branch naming for THIS task
+   8. **Risk Assessment**: Identify potential challenges for THIS task only
+   9. **Testing Strategy**: Define testing approach for THIS task only
+   10. **Success Criteria**: Define how success will be measured for THIS task only
+   11. **TaskMaster Updates**: Plan for updating ONLY this task's status and subtasks
+   12. **Execution Boundary**: Clearly state where execution stops (no auto-progression)
 
    Present the plan in a clear, structured format for user approval.
    
@@ -67,7 +75,7 @@ description: Execute tasks using TaskMaster AI for comprehensive planning and us
 1. **CRITICAL: Check Git Status**: Use Bash tool to check current git status and ensure on master/main
 2. **CRITICAL: Create Feature Branch**: MUST use mcp__github__create_branch following plan recommendations BEFORE any implementation
 3. **Update TaskMaster**: 
-   - Set relevant task status to "in_progress" using mcp__taskmaster-ai__set_task_status
+   - Set ONLY the specific task/subtask status to "in_progress" using mcp__taskmaster-ai__set_task_status
    - Add implementation notes using mcp__taskmaster-ai__update_task or mcp__taskmaster-ai__update_subtask
 4. **Initialize Todo List**: Use TodoWrite to create implementation todos based on approved plan
 5. **Execute Implementation**: Follow the approved plan step by step:
@@ -78,7 +86,8 @@ description: Execute tasks using TaskMaster AI for comprehensive planning and us
    - Provide brief progress updates
 6. **Testing**: Implement and run tests as defined in the plan
 7. **Validation**: Ensure all success criteria are met
-8. **Complete TaskMaster Task**: Set task status to "done" using mcp__taskmaster-ai__set_task_status
+8. **Complete ONLY Current Task**: Set ONLY the current task/subtask status to "done" using mcp__taskmaster-ai__set_task_status
+9. **STOP EXECUTION**: Do NOT automatically progress to next task - inform user of completion and wait for next instruction
 
 ### Phase 4: Iteration Support
 If modifications are needed during planning or implementation:
@@ -159,17 +168,29 @@ Determine thinking level based on task characteristics:
 ## EXECUTION SAFEGUARDS
 
 **MANDATORY WORKFLOW ENFORCEMENT:**
-1. **Phase 1**: MUST launch planning sub-agent and create comprehensive plan
+1. **Phase 1**: MUST launch planning sub-agent and create comprehensive plan for SINGLE task only
 2. **Phase 2**: MUST present plan and WAIT for explicit user approval
 3. **Phase 3**: MUST check git status and create feature branch BEFORE any implementation
 4. **Never skip planning phase** - all work must be planned and approved first
 5. **Never implement without feature branch** - all work must be done on feature branches
+6. **SINGLE TASK RULE**: NEVER work on multiple tasks in one execution - focus on ONE task/subtask only
+7. **NO AUTO-PROGRESSION**: NEVER automatically move to next task after completion - STOP and wait for user instruction
 
 **VIOLATION PREVENTION:**
 - If you find yourself implementing without a plan → STOP and restart with planning
 - If you find yourself on master/main during implementation → STOP and create feature branch
 - If you skip user approval → STOP and present plan for approval
 - If you bypass any phase → STOP and follow the correct workflow
+- **If you start working on multiple tasks → STOP and focus on ONE task only**
+- **If you automatically progress to next task → STOP and inform user of completion**
+- **If you continue beyond the planned single task → STOP and wait for new instructions**
+
+**COMPLETION PROTOCOL:**
+- After completing the planned single task, you MUST:
+  1. Set only the current task status to "done"
+  2. Provide completion summary
+  3. Suggest next logical task but DO NOT implement it
+  4. Wait for user to decide next action (new /execute command, different task, etc.)
 
 ## Examples
 
@@ -179,28 +200,32 @@ Determine thinking level based on task characteristics:
 ```
 - Planning uses "think" level
 - Check TaskMaster for existing UI/component tasks
+- Focus on ONLY the typo fix (one subtask)
 - Simple 3-step plan with TaskMaster updates
 - Quick approval and implementation
+- **STOPS** after fixing typo - suggests next task but waits for user
 
-### Complex Task
+### Complex Task - Single Subtask Focus
 ```
-/execute "Implement user authentication system with JWT tokens"
+/execute "Implement Auth.js middleware setup"
+```
+- Planning uses "think hard" level
+- Map to existing TaskMaster authentication task #3, subtask #4 ONLY
+- Focus ONLY on middleware implementation (not full auth system)
+- Comprehensive planning for this specific subtask
+- **STOPS** after middleware is complete - does NOT continue to UI components
+- Suggests next subtask (3.5) but waits for user instruction
+
+### Highly Complex Task - Single Task Focus
+```
+/execute "Set up core messaging infrastructure"
 ```
 - Planning uses "think harder" level
-- Map to existing TaskMaster authentication tasks (likely task #3)
-- Comprehensive planning with security considerations
-- Multiple approval cycles for different components
-- Detailed TaskMaster subtask tracking
-
-### Highly Complex Task
-```
-/execute "Design and implement a real-time messaging system"
-```
-- Planning uses "ultrathink" level
 - Check TaskMaster for messaging system tasks (likely task #11)
-- Architectural planning with multiple sub-systems
-- Iterative development with frequent check-ins
-- Extensive TaskMaster task breakdown and tracking
+- Focus ONLY on core infrastructure setup (one main task)
+- Does NOT implement full messaging system in one go
+- **STOPS** after infrastructure is complete
+- Suggests breaking into subtasks or next logical step but waits for user
 
 ## Project-Specific Context
 
