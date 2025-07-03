@@ -1,0 +1,187 @@
+<context>
+# Overview  
+This application enables communities to manage the **borrowing and lending of books** in a streamlined, collaborative way. It supports **individual users** as well as **parents managing their children's books**, offering flexibility for families, schools, and neighborhood book-sharing groups.
+
+The app empowers users to:
+- Track book availability within a community
+- Join waiting lists for popular books
+- Communicate directly with fellow community members
+- Manage lending workflows easily with reminders and a clean, modern UI
+
+By reducing friction in informal book sharing, this app promotes reading, sustainability, and community bonding.
+
+# Core Features  
+### 1. Book Management  
+- **What it does:** Users can add books to their personal or family library using book title, ISBN, or manual entry.  
+- **Why it's important:** A rich, organized book catalog enables effective lending and discovery.  
+- **How it works:** Book data is fetched via an external API (Google Books/Open Library). Covers and metadata are auto-populated; users can override manually.
+
+### 2. Borrow/Lend Workflow  
+- **What it does:** Allows requesting, lending, returning books, and tracking book statuses.  
+- **Why it's important:** Enables the core value proposition — shared community libraries.  
+- **How it works:** When a user wants a book, the owner receives a request to approve or decline. Once accepted, the book is marked as lent, with due date tracking.
+
+### 3. Waitlist  
+- **What it does:** Lets users join a queue if a book is already lent out.  
+- **Why it's important:** Encourages fairness and anticipation while maximizing book utility.  
+- **How it works:** The system tracks the queue; once the book is returned, the next user is notified.
+
+### 4. Parent Mode  
+- **What it does:** Allows a parent to manage borrowing and lending on behalf of one or more children.  
+- **Why it's important:** Accommodates family use cases and children's books.  
+- **How it works:** A parent account can switch between child profiles to act in their name.
+
+### 5. Community Spaces  
+- **What it does:** Organizes users into private or public groups for borrowing/lending.  
+- **Why it's important:** Keeps transactions relevant and localized to trusted members.  
+- **How it works:** Admins create communities, approve members, and oversee settings.
+
+### 6. Communication  
+- **What it does:** Enables chat or message threads per book transaction.  
+- **Why it's important:** Ensures coordination between borrowers and lenders.  
+- **How it works:** Async messaging via simple UI; notifications sent via in-app alerts or email.
+
+### 7. Reminders and Notifications  
+- **What it does:** Sends timely alerts for due dates, new messages, or waitlist availability.  
+- **Why it's important:** Keeps interactions smooth and timely.  
+- **How it works:** Scheduled tasks and Supabase triggers/cron functions.
+
+### 8. Authentication  
+- **What it does:** Provides secure access with support for Google OAuth and email/password.  
+- **Why it's important:** Protects user data and supports easy onboarding.  
+- **How it works:** Uses Auth.js for handling sessions, identity, and roles.
+
+### 9. Internationalization (i18n)  
+- **What it does:** Allows the interface to support multiple languages.  
+- **Why it's important:** Increases accessibility across diverse communities.  
+- **How it works:** Uses `next-i18next`; first language is Hebrew (RTL), others easily pluggable.
+
+# User Experience  
+### User Personas  
+1. **Individual Reader:** Wants to borrow books from neighbors or share their own.  
+2. **Parent:** Manages children's books and borrows on their behalf.  
+3. **Community Admin:** Sets up and manages user access and community rules.
+
+### Key User Flows  
+1. **Add a Book:**  
+User enters book title → Metadata auto-fetched → User confirms and adds to community.
+
+2. **Borrow a Book:**  
+Search for book → See availability → Send request → Owner accepts → Receive notification.
+
+3. **Join Waitlist:**  
+Book not available → Click "Join Waitlist" → Notification sent when book is returned.
+
+4. **Parent Acting on Behalf of Child:**  
+Parent logs in → Switches to child profile → Performs actions as the child.
+
+5. **Community Creation/Joining:**  
+User creates or joins a community → Community visible in user dashboard.
+
+### UI/UX Considerations  
+- Sleek, mobile-first design with Tailwind  
+- Book-centric layout with cover art emphasis  
+- RTL support for Hebrew; toggleable language setting  
+- Clear visual indicators for book status and waitlist positions  
+- Friendly reminders, icons, and color-coded workflows  
+</context>
+<PRD>
+# Technical Architecture  
+### System Components  
+- **Frontend:** Next.js + React + TailwindCSS  
+- **Backend:** Next.js API routes, hosted or serverless (Vercel/Supabase Edge)  
+- **Database:** PostgreSQL (Docker for dev, Supabase for prod)  
+- **Auth:** Auth.js (Google OAuth and email/password)  
+- **ORM** Prisma
+- **i18n:** `next-i18next`  
+- **Notifications:** Email or push via Supabase triggers or external services  
+- **Book Metadata API:** Google Books API / Open Library
+
+### Data Models (Simplified)
+#### Users & Identity
+- User: id, name, email, is_parent, auth_provider  
+- Child: id, name, parent_id
+
+#### Books & Inventory
+- Book: id, title, author, isbn, cover_url, added_by, community_id, is_available  
+- BorrowRequest: id, book_id, borrower_id, due_date, status  
+- WaitlistEntry: id, book_id, user_id, created_at
+
+#### Community & Messaging
+- Community: id, name, description, admin_id  
+- Membership: user_id, community_id, role  
+- Message: id, borrow_request_id, sender_id, text, created_at
+
+# Development Roadmap  
+### Phase 1: MVP  
+- User authentication (Google + email)  
+- Add/manage books via external API  
+- Borrow/lend flows with status tracking  
+- Waitlist queue logic  
+- Community creation and joining  
+- Parent mode (switchable profiles)  
+- Messaging per transaction  
+- Hebrew interface with full RTL support  
+- Responsive UI with Tailwind  
+- Docker-based dev environment + Supabase deployment
+
+### Phase 2: Core Enhancements  
+- Reminder system (due dates, waitlist alerts)  
+- Profile pages for users & children  
+- Basic notifications (email/push)  
+- Admin dashboard for communities  
+- Book categories, filtering, sorting
+
+### Phase 3: Expansion  
+- Multi-language interface (i18n rollout)  
+- Improved messaging (threaded view, image attachments)  
+- Recommendation engine (based on community favorites)  
+- Public book clubs or interest groups  
+- Mobile app wrapper (React Native or Capacitor)
+
+# Logical Dependency Chain  
+1. **Auth & Community Core**  
+   - Build Auth.js integration (Google + email)  
+   - Create community model & membership system
+
+2. **Book Infrastructure**  
+   - Add book form (manual + API lookup)  
+   - Display book cards with metadata
+
+3. **Borrow/Lend & Waitlist Logic**  
+   - Borrow request flow  
+   - Status updates  
+   - Waitlist joining and progression
+
+4. **Parent Mode & Profiles**  
+   - Switch context between parent and child  
+   - Child-specific borrowing records
+
+5. **Messaging**  
+   - Per-book communication  
+   - Notification plumbing
+
+6. **Reminders & Notifications**  
+   - Due date reminders  
+   - Supabase cron or third-party integration
+
+7. **UI/UX Polish & i18n**  
+   - RTL layout  
+   - Language toggle  
+   - Mobile responsiveness  
+   - Styling consistency
+
+# Risks and Mitigations  
+- **Technical challenges:**  
+  - Syncing waitlists and book status across users requires careful state management  
+  - Supabase’s limitations may require fallback to custom backends for scaling  
+- **MVP scope risk:**  
+  - Need to prevent feature creep by freezing core scope (borrow, waitlist, community, parent mode)  
+- **Resource constraints:**  
+  - Prioritize modular design for iterative releases with minimal engineering effort
+
+# Appendix  
+- Book Metadata APIs: Google Books, Open Library  
+- Supabase Documentation: Auth, Edge Functions, Realtime  
+- Tailwind UI for component scaffolding  
+</PRD>

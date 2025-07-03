@@ -1,0 +1,328 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Setup Project Repository and Development Environment",
+        "description": "Initialize the Next.js project with TypeScript, TailwindCSS, and Docker configuration for local development.",
+        "details": "1. Create a new Next.js project with TypeScript support:\n```bash\nnpx create-next-app@latest --typescript\n```\n2. Install TailwindCSS and configure it:\n```bash\nnpm install -D tailwindcss postcss autoprefixer\nnpx tailwindcss init -p\n```\n3. Set up Docker for local development:\n- Create a `docker-compose.yml` file for PostgreSQL\n- Configure environment variables for database connection\n4. Set up ESLint and Prettier for code quality\n5. Create initial project structure with folders for components, pages, hooks, utils, and API routes",
+        "testStrategy": "Verify that the development environment runs correctly by:\n1. Running the application locally\n2. Confirming hot reloading works\n3. Verifying PostgreSQL container is accessible\n4. Ensuring ESLint and TypeScript checks pass",
+        "priority": "high",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 2,
+        "title": "Configure Prisma ORM and Database Schema",
+        "description": "Set up Prisma ORM and define the database schema based on the data models specified in the PRD.",
+        "details": "1. Install Prisma:\n```bash\nnpm install prisma @prisma/client\nnpx prisma init\n```\n2. Define schema in `prisma/schema.prisma` with the following models:\n- User (id, name, email, is_parent, auth_provider)\n- Child (id, name, parent_id)\n- Book (id, title, author, isbn, cover_url, added_by, community_id, is_available)\n- BorrowRequest (id, book_id, borrower_id, due_date, status)\n- WaitlistEntry (id, book_id, user_id, created_at)\n- Community (id, name, description, admin_id)\n- Membership (user_id, community_id, role)\n- Message (id, borrow_request_id, sender_id, text, created_at)\n3. Create database migrations:\n```bash\nnpx prisma migrate dev --name init\n```\n4. Generate Prisma client:\n```bash\nnpx prisma generate\n```\n5. Create a database connection utility file",
+        "testStrategy": "1. Verify schema by running Prisma Studio (`npx prisma studio`)\n2. Test database connection\n3. Create unit tests for basic CRUD operations on each model\n4. Validate relationships between models",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 3,
+        "title": "Implement Authentication with Auth.js",
+        "description": "Set up authentication using Auth.js v5 with support for Google OAuth and email/password login.",
+        "status": "pending",
+        "dependencies": [
+          2
+        ],
+        "priority": "high",
+        "details": "1. Install Auth.js and required providers:\n```bash\nnpm install @auth/core @auth/prisma-adapter\n```\n2. Configure Auth.js in the project:\n- Create `auth.ts` in the root directory to define auth configuration\n- Set up Google OAuth provider\n- Set up email/password (credentials) provider\n- Configure Prisma adapter\n- Define session callbacks and auth options\n3. Create `app/api/auth/[...nextauth]/route.ts` to handle auth API routes\n4. Set up `middleware.ts` for route protection\n5. Create login and registration pages in the app directory\n6. Implement protected routes using Auth.js session\n7. Create authentication hooks for easy access to user session using the new Auth.js v5 API",
+        "testStrategy": "1. Test login flow with Google OAuth\n2. Test login flow with email/password\n3. Verify session persistence\n4. Test protected routes with middleware\n5. Verify logout functionality\n6. Test error handling for invalid credentials\n7. Verify Auth.js v5 session handling works correctly",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Install Auth.js v5 packages",
+            "description": "Install the required packages for Auth.js v5",
+            "status": "pending",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Create auth.ts configuration file",
+            "description": "Set up the main Auth.js configuration file with providers and options",
+            "status": "pending",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Implement API route handler",
+            "description": "Create app/api/auth/[...nextauth]/route.ts to handle authentication requests",
+            "status": "pending",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Set up middleware for route protection",
+            "description": "Create middleware.ts to protect routes based on authentication status",
+            "status": "pending",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Create authentication UI components",
+            "description": "Build login, registration, and profile components using the Auth.js v5 API",
+            "status": "pending",
+            "dependencies": [],
+            "details": "<info added on 2025-07-02T18:54:39.635Z>\nImplement responsive and user-friendly UI/UX for authentication components using TailwindCSS. This includes:\n\n1. Design and style the login form with proper validation feedback\n2. Create an aesthetically pleasing registration form with password strength indicators\n3. Develop a user profile component with avatar upload capabilities\n4. Ensure all forms have appropriate error states, loading indicators, and success messages\n5. Implement dark/light mode support for authentication components\n6. Add subtle animations for form transitions and button interactions\n7. Ensure accessibility compliance (WCAG) across all authentication interfaces\n8. Create consistent styling that aligns with the overall application design system\n9. Optimize mobile responsiveness for all authentication screens\n10. Add helpful tooltips and guidance for users during the authentication process\n</info added on 2025-07-02T18:54:39.635Z>",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Create User Profile Management",
+        "description": "Implement user profile creation, editing, and management functionality.",
+        "details": "1. Create user profile page with editable fields\n2. Implement API routes for user profile CRUD operations:\n- GET /api/users/[id]\n- PUT /api/users/[id]\n3. Create form components for profile editing\n4. Add profile picture upload functionality (optional)\n5. Implement form validation\n6. Create user dashboard component showing user activity\n7. Add user settings page for notification preferences",
+        "testStrategy": "1. Test profile creation and editing\n2. Validate form submissions and error handling\n3. Test API routes with various inputs\n4. Verify profile data persistence\n5. Test user settings changes",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "Implement Parent Mode and Child Profiles",
+        "description": "Create functionality for parents to manage child profiles and act on their behalf.",
+        "details": "1. Extend user model to support parent-child relationships\n2. Create UI for adding and managing child profiles\n3. Implement profile switcher component for parents\n4. Add API routes for child profile management:\n- POST /api/users/[id]/children\n- GET /api/users/[id]/children\n- PUT /api/users/[id]/children/[childId]\n- DELETE /api/users/[id]/children/[childId]\n5. Implement context tracking for current active profile\n6. Add visual indicators for parent mode\n7. Create permissions system to control what actions can be performed on behalf of children",
+        "testStrategy": "1. Test creating, editing, and deleting child profiles\n2. Verify profile switching functionality\n3. Test borrowing and lending as a child profile\n4. Validate permissions and restrictions\n5. Test API routes for child profile management",
+        "priority": "medium",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 6,
+        "title": "Implement Community Creation and Management",
+        "description": "Build functionality for creating, joining, and managing communities.",
+        "details": "1. Create community creation form and workflow\n2. Implement community settings and management page\n3. Add API routes for community operations:\n- POST /api/communities\n- GET /api/communities\n- GET /api/communities/[id]\n- PUT /api/communities/[id]\n- DELETE /api/communities/[id]\n4. Create membership management UI for community admins\n5. Implement invitation system for private communities\n6. Add community discovery page\n7. Create community dashboard showing activity and statistics",
+        "testStrategy": "1. Test community creation process\n2. Verify community settings changes\n3. Test joining and leaving communities\n4. Validate admin privileges and actions\n5. Test invitation system\n6. Verify community listing and discovery",
+        "priority": "high",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 7,
+        "title": "Integrate Book Metadata API",
+        "description": "Implement integration with Google Books API and Open Library for fetching book metadata.",
+        "details": "1. Create API client for Google Books API\n2. Create API client for Open Library API\n3. Implement book search functionality\n4. Create utility functions for parsing and normalizing book data\n5. Add caching layer for API responses\n6. Implement fallback mechanism between APIs\n7. Create book metadata preview component\n8. Add error handling for API failures",
+        "testStrategy": "1. Test book search with various queries\n2. Verify metadata retrieval for ISBNs\n3. Test fallback between APIs\n4. Validate parsing and normalization\n5. Test caching functionality\n6. Verify error handling",
+        "priority": "medium",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 8,
+        "title": "Implement Book Management",
+        "description": "Create functionality for users to add, edit, and manage books in their personal or community library.",
+        "details": "1. Create book addition form with manual and API-assisted options\n2. Implement book editing and deletion\n3. Create book detail page\n4. Add API routes for book operations:\n- POST /api/books\n- GET /api/books\n- GET /api/books/[id]\n- PUT /api/books/[id]\n- DELETE /api/books/[id]\n5. Implement book listing and filtering\n6. Create book card component with status indicators\n7. Add book cover image handling and optimization",
+        "testStrategy": "1. Test book addition with manual entry\n2. Test book addition with API lookup\n3. Verify editing and deletion\n4. Test book listing and filtering\n5. Validate book detail page\n6. Test API routes for book operations",
+        "priority": "high",
+        "dependencies": [
+          6,
+          7
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 9,
+        "title": "Implement Borrow/Lend Workflow",
+        "description": "Create the core borrowing and lending functionality with request management and status tracking.",
+        "details": "1. Implement borrow request creation\n2. Create request approval/rejection workflow\n3. Implement book status tracking (available, requested, borrowed, etc.)\n4. Add due date selection and management\n5. Create API routes for borrow operations:\n- POST /api/books/[id]/borrow-requests\n- GET /api/books/[id]/borrow-requests\n- PUT /api/borrow-requests/[id]\n- DELETE /api/borrow-requests/[id]\n6. Implement book return process\n7. Create dashboard for tracking borrowed and lent books\n8. Add transaction history",
+        "testStrategy": "1. Test borrow request creation\n2. Verify approval and rejection flows\n3. Test book status changes\n4. Validate due date functionality\n5. Test book return process\n6. Verify transaction history\n7. Test API routes for borrow operations",
+        "priority": "high",
+        "dependencies": [
+          8
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 10,
+        "title": "Implement Waitlist Functionality",
+        "description": "Create waitlist system for books that are currently unavailable.",
+        "details": "1. Implement waitlist joining functionality\n2. Create waitlist position tracking\n3. Implement automatic notification when book becomes available\n4. Add API routes for waitlist operations:\n- POST /api/books/[id]/waitlist\n- GET /api/books/[id]/waitlist\n- DELETE /api/books/[id]/waitlist/[entryId]\n5. Create UI for viewing and managing waitlists\n6. Implement priority system for waitlist (optional)\n7. Add waitlist position indicators on book cards",
+        "testStrategy": "1. Test joining and leaving waitlists\n2. Verify waitlist position tracking\n3. Test notifications when book becomes available\n4. Validate automatic progression of waitlist\n5. Test API routes for waitlist operations\n6. Verify waitlist UI elements",
+        "priority": "medium",
+        "dependencies": [
+          9
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 11,
+        "title": "Implement Messaging System",
+        "description": "Create messaging functionality for communication between borrowers and lenders.",
+        "details": "1. Implement message creation and threading per book transaction\n2. Create message listing and conversation view\n3. Add real-time updates using Supabase Realtime or similar\n4. Implement API routes for messaging:\n- POST /api/borrow-requests/[id]/messages\n- GET /api/borrow-requests/[id]/messages\n- DELETE /api/messages/[id]\n5. Create unread message indicators\n6. Add message notifications\n7. Implement basic formatting options",
+        "testStrategy": "1. Test message creation and threading\n2. Verify message listing and conversation view\n3. Test real-time updates\n4. Validate unread indicators\n5. Test notifications\n6. Verify API routes for messaging",
+        "priority": "medium",
+        "dependencies": [
+          9
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 12,
+        "title": "Implement Reminders and Notifications System",
+        "description": "Create a system for sending reminders about due dates, waitlist availability, and other events.",
+        "details": "1. Design notification data model and types\n2. Implement notification creation and storage\n3. Create notification center UI\n4. Set up Supabase Edge Functions or cron jobs for scheduled reminders\n5. Implement email notification sending\n6. Create due date reminder logic\n7. Implement waitlist notification logic\n8. Add user notification preferences",
+        "testStrategy": "1. Test notification creation and storage\n2. Verify notification center UI\n3. Test scheduled reminders\n4. Validate email sending\n5. Test due date reminders\n6. Verify waitlist notifications\n7. Test user preferences",
+        "priority": "medium",
+        "dependencies": [
+          9,
+          10,
+          11
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 13,
+        "title": "Implement Internationalization (i18n)",
+        "description": "Set up internationalization with support for Hebrew (RTL) and other languages.",
+        "details": "1. Install and configure next-i18next:\n```bash\nnpm install next-i18next\n```\n2. Create translation files for Hebrew and English\n3. Implement language switching\n4. Add RTL support for Hebrew\n5. Create language-specific layouts\n6. Update components to use translation keys\n7. Implement date and number formatting based on locale\n8. Add language preference to user settings",
+        "testStrategy": "1. Test language switching\n2. Verify RTL layout for Hebrew\n3. Test translation coverage\n4. Validate date and number formatting\n5. Test language preference saving",
+        "priority": "medium",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 14,
+        "title": "Create Responsive UI with Tailwind",
+        "description": "Implement responsive UI components and layouts using TailwindCSS.",
+        "details": "1. Create responsive navigation component\n2. Implement mobile-friendly book cards\n3. Create responsive forms\n4. Implement responsive tables for book listings\n5. Create mobile-friendly messaging interface\n6. Implement responsive community pages\n7. Add responsive user profiles\n8. Create responsive waitlist UI",
+        "testStrategy": "1. Test UI on various screen sizes\n2. Verify mobile navigation\n3. Test touch interactions\n4. Validate form usability on mobile\n5. Test responsive tables",
+        "priority": "medium",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 15,
+        "title": "Implement Book Search and Filtering",
+        "description": "Create search functionality for books with filtering options.",
+        "details": "1. Implement book search by title, author, and ISBN\n2. Create filtering by availability status\n3. Add filtering by community\n4. Implement sorting options (newest, alphabetical, etc.)\n5. Create saved searches (optional)\n6. Add pagination for search results\n7. Implement search history\n8. Create advanced search form",
+        "testStrategy": "1. Test search with various queries\n2. Verify filtering functionality\n3. Test sorting options\n4. Validate pagination\n5. Test search history\n6. Verify advanced search",
+        "priority": "medium",
+        "dependencies": [
+          8
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 16,
+        "title": "Create Admin Dashboard for Communities",
+        "description": "Implement admin dashboard for community management.",
+        "details": "1. Create admin dashboard UI\n2. Implement member management\n3. Add book approval workflow (optional)\n4. Create community statistics\n5. Implement community settings management\n6. Add moderation tools for messages\n7. Create invitation management\n8. Implement admin logs",
+        "testStrategy": "1. Test member management\n2. Verify community settings changes\n3. Test moderation tools\n4. Validate invitation management\n5. Test admin logs",
+        "priority": "low",
+        "dependencies": [
+          6
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 17,
+        "title": "Implement User Activity Dashboard",
+        "description": "Create a dashboard showing user activity, borrowed books, and lending history.",
+        "details": "1. Design activity dashboard UI\n2. Implement currently borrowed books section\n3. Create lending history section\n4. Add waitlist status section\n5. Implement pending requests section\n6. Create activity timeline\n7. Add statistics on borrowing and lending\n8. Implement reading history (optional)",
+        "testStrategy": "1. Test dashboard with various user activities\n2. Verify borrowed books section\n3. Test lending history\n4. Validate waitlist status\n5. Test pending requests\n6. Verify activity timeline",
+        "priority": "medium",
+        "dependencies": [
+          9,
+          10
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 18,
+        "title": "Set Up Deployment Pipeline",
+        "description": "Configure deployment to Vercel and Supabase for production.",
+        "details": "1. Set up Vercel project\n2. Configure Supabase production database\n3. Set up environment variables\n4. Configure build and deployment scripts\n5. Implement database migration strategy\n6. Set up monitoring and logging\n7. Create backup strategy\n8. Implement CI/CD pipeline",
+        "testStrategy": "1. Test deployment process\n2. Verify environment variables\n3. Test database migrations\n4. Validate monitoring and logging\n5. Test backup and restore",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          2,
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 19,
+        "title": "Implement Error Handling and Logging",
+        "description": "Create comprehensive error handling and logging system.",
+        "details": "1. Implement global error boundary\n2. Create error logging service\n3. Implement API error handling\n4. Add user-friendly error messages\n5. Create error reporting mechanism\n6. Implement retry logic for API calls\n7. Add monitoring for critical operations\n8. Create admin error dashboard (optional)",
+        "testStrategy": "1. Test error boundary with various errors\n2. Verify error logging\n3. Test API error handling\n4. Validate user-friendly messages\n5. Test error reporting",
+        "priority": "medium",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 20,
+        "title": "Create End-to-End Testing Suite",
+        "description": "Implement comprehensive end-to-end testing for critical user flows.",
+        "details": "1. Set up Cypress or Playwright for E2E testing\n2. Create test for user registration and login\n3. Implement test for book addition and management\n4. Create test for borrowing and lending flow\n5. Implement test for waitlist functionality\n6. Create test for messaging\n7. Implement test for parent mode\n8. Create test for community management",
+        "testStrategy": "1. Run tests in CI/CD pipeline\n2. Verify all critical user flows\n3. Test edge cases and error scenarios\n4. Validate mobile responsiveness\n5. Test internationalization",
+        "priority": "medium",
+        "dependencies": [
+          3,
+          5,
+          6,
+          8,
+          9,
+          10,
+          11,
+          13
+        ],
+        "status": "pending",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-07-02T18:22:21.614Z",
+      "updated": "2025-07-03T13:35:47.557Z",
+      "description": "Tasks for master context"
+    }
+  }
+}
