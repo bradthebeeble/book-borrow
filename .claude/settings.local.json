@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__taskmaster-ai__set_task_status",
+      "Bash(find:*)",
+      "Bash(rm:*)",
+      "mcp__taskmaster-ai__get_tasks",
+      "mcp__taskmaster-ai__next_task",
+      "Bash(npx create-next-app:*)",
+      "Bash(npm install:*)",
+      "Bash(mkdir:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(lsof:*)",
+      "Bash(docker-compose:*)",
+      "Bash(npm run build:*)",
+      "Bash(docker exec:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(git add:*)",
+      "Bash(ls:*)",
+      "Bash(git commit:*)"
+    ],
+    "deny": []
+  }
+}
