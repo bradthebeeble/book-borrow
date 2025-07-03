@@ -1,0 +1,226 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// User model for authentication and profile data
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String?
+  isParent      Boolean  @default(false) @map("is_parent")
+  authProvider  String?  @map("auth_provider")
+  image         String?
+  emailVerified DateTime? @map("email_verified")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  // Relationships
+  children          Child[]
+  books             Book[]
+  borrowRequests    BorrowRequest[]
+  waitlistEntries   WaitlistEntry[]
+  ownedCommunities  Community[]
+  memberships       Membership[]
+  sentMessages      Message[]
+  accounts          Account[]
+  sessions          Session[]
+
+  @@map("users")
+}
+
+// Child model for parent-child relationships
+model Child {
+  id       String @id @default(cuid())
+  name     String
+  parentId String @map("parent_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relationships
+  parent User @relation(fields: [parentId], references: [id], onDelete: Cascade)
+
+  @@map("children")
+}
+
+// Community model for book sharing groups
+model Community {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  adminId     String   @map("admin_id")
+  isPrivate   Boolean  @default(false) @map("is_private")
+  inviteCode  String?  @unique @map("invite_code")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relationships
+  admin       User         @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  books       Book[]
+  memberships Membership[]
+
+  @@map("communities")
+}
+
+// Membership model for community participation
+model Membership {
+  id          String        @id @default(cuid())
+  userId      String        @map("user_id")
+  communityId String        @map("community_id")
+  role        MembershipRole @default(MEMBER)
+  joinedAt    DateTime      @default(now()) @map("joined_at")
+
+  // Relationships
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  community Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, communityId])
+  @@map("memberships")
+}
+
+// Book model for book metadata and availability
+model Book {
+  id          String   @id @default(cuid())
+  title       String
+  author      String
+  isbn        String?
+  coverUrl    String?  @map("cover_url")
+  description String?
+  isAvailable Boolean  @default(true) @map("is_available")
+  condition   BookCondition @default(GOOD)
+  addedById   String   @map("added_by_id")
+  communityId String?  @map("community_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relationships
+  addedBy         User            @relation(fields: [addedById], references: [id], onDelete: Cascade)
+  community       Community?      @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  borrowRequests  BorrowRequest[]
+  waitlistEntries WaitlistEntry[]
+
+  @@index([title])
+  @@index([author])
+  @@index([isbn])
+  @@map("books")
+}
+
+// BorrowRequest model for lending workflow
+model BorrowRequest {
+  id          String              @id @default(cuid())
+  bookId      String              @map("book_id")
+  borrowerId  String              @map("borrower_id")
+  dueDate     DateTime?           @map("due_date")
+  status      BorrowRequestStatus @default(PENDING)
+  notes       String?
+  createdAt   DateTime            @default(now()) @map("created_at")
+  updatedAt   DateTime            @updatedAt @map("updated_at")
+
+  // Relationships
+  book      Book      @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  borrower  User      @relation(fields: [borrowerId], references: [id], onDelete: Cascade)
+  messages  Message[]
+
+  @@index([status])
+  @@index([dueDate])
+  @@map("borrow_requests")
+}
+
+// WaitlistEntry model for availability queuing
+model WaitlistEntry {
+  id        String   @id @default(cuid())
+  bookId    String   @map("book_id")
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relationships
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([bookId, userId])
+  @@index([createdAt])
+  @@map("waitlist_entries")
+}
+
+// Message model for user communication
+model Message {
+  id              String   @id @default(cuid())
+  borrowRequestId String   @map("borrow_request_id")
+  senderId        String   @map("sender_id")
+  text            String
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  // Relationships
+  borrowRequest BorrowRequest @relation(fields: [borrowRequestId], references: [id], onDelete: Cascade)
+  sender        User          @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@map("messages")
+}
+
+// Account model for Auth.js integration
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refreshToken      String? @map("refresh_token")
+  accessToken       String? @map("access_token")
+  expiresAt         Int?    @map("expires_at")
+  tokenType         String? @map("token_type")
+  scope             String?
+  idToken           String? @map("id_token")
+  sessionState      String? @map("session_state")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+// Session model for Auth.js integration
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+// Enums for type safety
+enum MembershipRole {
+  MEMBER
+  MODERATOR
+  ADMIN
+}
+
+enum BookCondition {
+  EXCELLENT
+  GOOD
+  FAIR
+  POOR
+}
+
+enum BorrowRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  ACTIVE
+  RETURNED
+  OVERDUE
+}
