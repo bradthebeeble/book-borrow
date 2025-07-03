@@ -14,19 +14,23 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-// User model for authentication and profile data
+// User model for authentication and profile data - Auth.js compatible
 model User {
-  id            String   @id @default(cuid())
-  email         String   @unique
+  id            String    @id @default(cuid())
   name          String?
-  isParent      Boolean  @default(false) @map("is_parent")
-  authProvider  String?  @map("auth_provider")
-  image         String?
+  email         String?   @unique
   emailVerified DateTime? @map("email_verified")
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
+  image         String?
+  password      String?   // Optional for OAuth users, needed for credentials
+  isParent      Boolean   @default(false) @map("is_parent")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
 
-  // Relationships
+  // Auth.js required relationships
+  accounts      Account[]
+  sessions      Session[]
+
+  // App-specific relationships
   children          Child[]
   books             Book[]
   borrowRequests    BorrowRequest[]
@@ -34,8 +38,6 @@ model User {
   ownedCommunities  Community[]
   memberships       Membership[]
   sentMessages      Message[]
-  accounts          Account[]
-  sessions          Session[]
 
   @@map("users")
 }
@@ -176,13 +178,13 @@ model Account {
   type              String
   provider          String
   providerAccountId String  @map("provider_account_id")
-  refreshToken      String? @map("refresh_token")
-  accessToken       String? @map("access_token")
-  expiresAt         Int?    @map("expires_at")
-  tokenType         String? @map("token_type")
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
   scope             String?
-  idToken           String? @map("id_token")
-  sessionState      String? @map("session_state")
+  id_token          String?
+  session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -200,6 +202,16 @@ model Session {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
+}
+
+// VerificationToken model for Auth.js integration
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
 }
 
 // Enums for type safety
