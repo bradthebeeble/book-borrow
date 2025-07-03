@@ -8,6 +8,9 @@ declare global {
 
 export const db = globalThis.prisma || new PrismaClient()
 
+// Export as prisma for Auth.js compatibility
+export const prisma = db
+
 if (process.env.NODE_ENV !== 'production') {
   globalThis.prisma = db
 }
